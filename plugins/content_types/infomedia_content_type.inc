@@ -62,7 +62,8 @@ function infomedia_content_type_render($subtype, $conf, $args, $context) {
   $id = ( isset($args[0]) ) ? (int)$args[0] : $context->original_argument;
   // The title actually used in rendering.
   // $block->title = "Infomedia article";
-  $block->content = drupal_render(ting_infomedia_view($id));
+  $content = ting_infomedia_view($id);
+  $block->content = drupal_render($content);
 
   return $block;
 }

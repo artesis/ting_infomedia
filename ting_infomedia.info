@@ -7,3 +7,9 @@ dependencies[] = panels
 dependencies[] = page_manager
 version = "7.x-1.11"
 core = 7.x
+
+files[] = classes/TingGenericInfomediaRequest.php
+files[] = classes/TingInfomediaArticleRequest.php
+files[] = classes/TingInfomediaArticleResult.php
+files[] = classes/TingInfomediaReviewRequest.php
+files[] = classes/TingInfomediaReviewResult.php

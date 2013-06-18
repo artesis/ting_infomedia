@@ -1,43 +1,49 @@
 <?php
 /**
- * Infomedia - retrieve article identified by faust
- *
- * @param int $id Faust
- * @return TingClientInfomediaResult
+ * @file
+ * Infomedia helper functions.
  */
 
 module_load_include('client.inc', 'ting');
 
+/**
+ * Infomedia - retrieve article identified by faust
+ *
+ * @param int $id Faust
+ * @return TingInfomediaArticleResult
+ */
 function ting_infomedia_get_article($id) {
-  try {
-    $factory = ting_get_request_factory();
-  }
-  catch( TingClientException $e ) {
-    watchdog($e->message);
+  $request = ting_get_request_factory('infomediaArticle');
+
+  if (empty($request)) {
+    return NULL;
   }
 
-  $request = $factory->getInfomediaArticleRequest();
-  $request->makeGet();
+  $request->getArticle();
   $request->setFaust($id);
- 
-  ting_infomedia_add_user_creds($request);
-  $ret = $request->parse(ting_execute($request->getRequest()));
+  $request = ting_infomedia_add_user_creds($request);
 
-  return $ret;
+  return ting_execute($request);
 }
 
 /**
  * Infomedia - verify that request of item identify by faust does return an article
  *
  * @param int $id Faust
- * @return TingClientInfomediaResult
+ * @return TingInfomediaArticleResult
  */
 function ting_infomedia_check_article($id) {
-  $request = ting_get_request_factory()->getInfomediaArticleRequest();
-  $request->makeCheck();
+  $request = ting_get_request_factory('infomediaArticle');
+
+  if (empty($request)) {
+    return NULL;
+  }
+
+  $request->checkArticle();
   $request->setFaust($id);
   $request = ting_infomedia_add_user_creds($request);
-  return TingClientInfomediaArticleRequest::parse(ting_execute($request));
+
+  return ting_execute($request);
 }
 
 /**
@@ -47,11 +53,16 @@ function ting_infomedia_check_article($id) {
  *   Faust or ISBN
  * @param bool $id_is_isbn
  *   Is $id an ISBN instead of faust
- * @return TingClientInfomediaResult
+ * @return TingInfomediaArticleResult
  */
 function ting_infomedia_get_review($id, $id_is_isbn = FALSE) {
-  $request = ting_get_request_factory()->getInfomediaReviewRequest();
-  $request->makeGet();
+  $request = ting_get_request_factory('infomediaReview');
+
+  if (empty($request)) {
+    return NULL;
+  }
+
+  $request->getReview();
 
   if ($id_is_isbn) {
     $request->setISBN($id);
@@ -61,7 +72,7 @@ function ting_infomedia_get_review($id, $id_is_isbn = FALSE) {
   }
 
   $request = ting_infomedia_add_user_creds($request);
-  return TingClientInfomediaReviewRequest::parse(ting_execute($request));
+  return ting_execute($request);
 }
 
 function checkUser() {
@@ -76,11 +87,16 @@ function checkUser() {
  *   Faust or ISBN
  * @param bool $id_is_isbn
  *   Is $id an ISBN instead of faust
- * @return TingClientInfomediaResult
+ * @return TingInfomediaArticleResult
  */
 function ting_infomedia_check_review($id, $id_is_isbn = FALSE) {
-  $request = ting_get_request_factory()->getInfomediaReviewRequest();
-  $request->makeCheck();
+  $request = ting_get_request_factory('infomediaReview');
+
+  if (empty($request)) {
+    return NULL;
+  }
+
+  $request->checkReview();
 
   if ($id_is_isbn) {
     $request->setISBN($id);
@@ -90,7 +106,7 @@ function ting_infomedia_check_review($id, $id_is_isbn = FALSE) {
   }
 
   $request = ting_infomedia_add_user_creds($request);
-  return TingClientInfomediaReviewRequest::parse(ting_execute($request));
+  return ting_execute($request);
 }
 
 /**
@@ -99,27 +115,24 @@ function ting_infomedia_check_review($id, $id_is_isbn = FALSE) {
  * Adds agency and if user is authorized user credentials to request object and
  * returns the object
  *
- * @param TingClientInfomediaResult $request
+ * @param TingGenericInfomediaRequest $request
  *   Request object to add user credentials to
- * @return TingClientInfomediaRequest
+ * @return TingGenericInfomediaRequest
  */
-function ting_infomedia_add_user_creds(TingClientInfomediaRequest $request) {
+function ting_infomedia_add_user_creds(TingGenericInfomediaRequest $request) {
   try {
     $creds = ding_user_get_creds();
     $request->setUser($creds['name']);
     $request->setPin($creds['pass']);
-    if ($agency = variable_get('ting_agency', FALSE)) {
-      $request->setAgency($agency);
-    }
   }
-  catch(DingProviderAuthException $e) {//do nothing 
+  catch(DingProviderAuthException $e) {//do nothing
   }
 
   $name = isset($creds['name']) ? $creds['name'] : '';
-  $pass = isset($creds['pass']) ? $creds['pass'] : '';  
- 
+  $pass = isset($creds['pass']) ? $creds['pass'] : '';
+
   // check if user is authenticated
-  ding_provider_invoke_page('user', 'authenticate', $name, $pass); 
+  ding_provider_invoke_page('user', 'authenticate', $name, $pass);
   return $request;
 }
 
