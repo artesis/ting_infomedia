@@ -38,8 +38,6 @@ class TingInfomediaReviewResult {
     $nodelist = $xpath->query($responseNode);
 
     if ($nodelist->length == 0) return;
-    #throw new TingClientException('TingClientInfomediaRequest got no Infomedia response: ', $responseString);
-
 
     $errorlist = $xpath->query($responseNode . $errorNode);
 
@@ -57,7 +55,10 @@ class TingInfomediaReviewResult {
       for($i = 0; $i < $detailslist->length; $i++) {
         $identifier = $identifierlist->item($i)->nodeValue;
         $count = $countlist->item($i)->nodeValue;
-        $this->parts[] = array('identifier' => $identifier,'count' => (int) $count);
+        $this->parts[] = array(
+          'identifier' => $identifier,
+          'count' => (int) $count,
+        );
       }
     }
     else {
