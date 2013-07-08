@@ -25,9 +25,21 @@ class TingInfomediaArticleResult {
   protected function process() {
     $dom = new DOMDocument();
 
-    if (!@$dom->loadXML($this->xml)) {
-      throw new TingClientException('malformed xml in infomedia-response: '. $this->xml);
+    if ($this->xml instanceof SimpleXMLElement) {
+      $dom_elem = dom_import_simplexml($this->xml);
+      if ($dom_elem === FALSE) {
+        throw new TingClientException('malformed xml in infomedia-response: '. $this->xml);
+      }
+      $dom_elem = $dom->importNode($dom_elem, true);
+      $dom->appendChild($dom_elem);
     }
+    // Plain xml.
+    else {
+      if (!@$dom->loadXML($this->xml)) {
+        throw new TingClientException('malformed xml in infomedia-response: '. $this->xml);
+      }
+    }
+
     $xpath = new DOMXPath($dom);
     $action = $this->request->getAction();
     $method = substr($action, 0, 3) == 'get' ? 'get' : 'check';
