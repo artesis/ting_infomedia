@@ -27,15 +27,16 @@ function ting_infomedia_menu() {
  */
 function ting_infomedia_view($id) {
   $article = ting_infomedia_parse_article($id);
+  $link = l(t('Return to material page'), 'search/ting/' . $id);
+
   return array(
-    '#markup' => '<div id="article-wrapper">' . render($article). '</div>',
+    '#markup' => '<div id="article-wrapper">' . render($article). '<hr>' . $link . '</div>',
     '#theme' => 'ting_infomedia_article',
     '#attached' => array(
       'css' => array(drupal_get_path('module', 'ting_infomedia') . '/ting_infomedia_article_view.css'),
     ),
   );
 }
-
 
 /**
  * Implements hook_theme
@@ -58,7 +59,6 @@ function ting_infomedia_theme( $existing, $type, $theme, $path ) {
 
   return $render_array;
 }
-
 
 /**
  * Return stripped path. e.g /ting/infomedia/33514212 -> /ting/infomedia
@@ -135,6 +135,7 @@ function ting_infomedia_parse_article($id) {
       ting_infomedia_clean_html($html);
     }
   }
+
   return $html;
 }
 
