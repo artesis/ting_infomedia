@@ -18,4 +18,3 @@ files[] = classes/TingInfomediaArticleRequest.php
 files[] = classes/TingInfomediaArticleResult.php
 files[] = classes/TingInfomediaReviewRequest.php
 files[] = classes/TingInfomediaReviewResult.php
-required = 1
