@@ -8,8 +8,7 @@
  * Implements hook_default_page_manager_pages().
  */
 function ting_infomedia_default_page_manager_pages() {
-
-  $page = new stdClass;
+  $page = new stdClass();
   $page->disabled = FALSE; /* Edit this to true to make a default page disabled initially */
   $page->api_version = 1;
   $page->name = 'ting_infomedia';
@@ -31,14 +30,14 @@ function ting_infomedia_default_page_manager_pages() {
     'admin_paths' => FALSE,
   );
   $page->default_handlers = array();
-  $handler = new stdClass;
+  $handler = new stdClass();
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
   $handler->name = 'page_ting_infomedia_panel_context';
   $handler->task = 'page';
   $handler->subtask = 'ting_infomedia';
   $handler->handler = 'panel_context';
-  $handler->weight = 0;
+  $handler->weight = -29;
   $handler->conf = array(
     'title' => 'Infomedia Panel',
     'no_blocks' => 0,
@@ -51,7 +50,7 @@ function ting_infomedia_default_page_manager_pages() {
     'panels_breadcrumbs_titles' => 'Infomedia',
     'panels_breadcrumbs_paths' => '<none>',
   );
-  $display = new panels_display;
+  $display = new panels_display();
   $display->layout = 'threecol_25_50_25';
   $display->layout_settings = array();
   $display->panel_settings = array(
@@ -66,7 +65,7 @@ function ting_infomedia_default_page_manager_pages() {
   $display->title = '';
   $display->content = array();
   $display->panels = array();
-    $pane = new stdClass;
+    $pane = new stdClass();
     $pane->pid = 'new-1';
     $pane->panel = 'middle';
     $pane->type = 'infomedia_content_type';
@@ -81,15 +80,15 @@ function ting_infomedia_default_page_manager_pages() {
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 0;
+    $pane->locks = '';
     $display->content['new-1'] = $pane;
     $display->panels['middle'][0] = 'new-1';
   $display->hide_title = PANELS_TITLE_NONE;
   $display->title_pane = 'new-1';
   $handler->conf['display'] = $display;
   $page->default_handlers[$handler->name] = $handler;
-  // end exported panel.
+  $pages['ting_infomedia'] = $page;
 
-  $pages['base_page'] = $page;
   return $pages;
 
 }
