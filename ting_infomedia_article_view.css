@@ -1,4 +1,10 @@
-p.p_infomedia {
+.pane-infomedia-content-type,
+.infomedia-image {
+  background-color: white;
+  padding: 20px;
+}
+
+.p_infomedia {
   margin-bottom:0.5em;
   padding:0;
 }
@@ -7,38 +13,38 @@ h4 {
   font-size:1.2em;
 }
 
-div.infomedia_HeadLine {
+.infomedia_HeadLine {
   font-size:1.5em;
   font-weight: bold;
   padding-bottom: 0.25em;
 }
 
-div.infomedia_SubHeadLine {
+.infomedia_SubHeadLine {
   font-weight:bold;
   margin-bottom:5px;
   margin-top:5px;
   font-size:1.1em;
 }
 
-div.infomedia_ByLine {
+.infomedia_ByLine {
   float:left;
 }
 
-div.infomedia_paper {
+.infomedia_paper {
   float:right;
   margin-right:1em;
 }
 
-div.infomedia_DateLine {
+.infomedia_DateLine {
   float:right;
 }
 
-div#infomedia_wrap {
+#infomedia_wrap {
   float:left;
   margin:0.5em;
 }
 
-div.infomedia_hedline {
+.infomedia_hedline {
   clear:both;
   padding-top:5px;
   font-weight:bold;
@@ -47,12 +53,12 @@ div.infomedia_hedline {
   margin-bottom:10px;
 }
 
-div.infomedia_tabs {
+.infomedia_tabs {
   float:right;
   margin-right:0.5em;
 }
 
-div.infomedia_tab {
+.infomedia_tab {
   background:url('../pics/menu/mit-bib-knap-bg.png');
   border-bottom:1px solid #000000;
   border-left:1px solid #000000;
@@ -65,38 +71,38 @@ div.infomedia_tab {
 }
 
 
-div.tab_active {
+.tab_active {
   background:none;
   background-color:#FFFFFF;
   border-top:1px solid #000000;
   border-bottom:none;
 }
 
-div.select {
+.select {
   float:left;
 }
 
-div.infomedia-image {
+.infomedia-image {
   float:right;
   position:relative;
-  top:0.5em;
+  top:0;
   right:0.5em;
 }
 
-div.infomedia-image {
+.infomedia-image {
   position:absolute;
   right:1em;
   top:1em;
   z-index:1000;
 }
 
-div.infomedia_print {
+.infomedia_print {
   float: left;
   margin-left:0.5em;
   margin-top:0.5em;
 }
 
-div.infomedia_error {
+.infomedia_error {
   border:1px #CCCCCC solid;
   width:47%;
   margin:1px;
@@ -104,7 +110,7 @@ div.infomedia_error {
   float:left;
 }
 
-div.infomedia_logo {
+.infomedia_logo {
   display:none;
 }
 

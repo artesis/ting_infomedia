@@ -20,22 +20,23 @@ function ting_infomedia_menu() {
   return $items;
 }
 */
-
 /**
  * Page callback function
  *
  * Return a render array
  */
 function ting_infomedia_view($id) {
-return array(
-    '#markup' => '<div id="article-wrapper">' . render(ting_infomedia_parse_article($id)). '</div>',
+  $article = ting_infomedia_parse_article($id);
+  $link = l(t('Return to material page'), 'search/ting/' . $id);
+
+  return array(
+    '#markup' => '<div id="article-wrapper">' . render($article). '<hr>' . $link . '</div>',
     '#theme' => 'ting_infomedia_article',
     '#attached' => array(
       'css' => array(drupal_get_path('module', 'ting_infomedia') . '/ting_infomedia_article_view.css'),
     ),
   );
 }
-
 
 /**
  * Implements hook_theme
@@ -58,7 +59,6 @@ function ting_infomedia_theme( $existing, $type, $theme, $path ) {
 
   return $render_array;
 }
-
 
 /**
  * Return stripped path. e.g /ting/infomedia/33514212 -> /ting/infomedia
@@ -89,7 +89,7 @@ function ting_infomedia_anchor_info() {
   // We need to know what kind of hasOnlineAccess
   // is provided with this object and return relevant anchor information.
   $object = menu_get_object('ting_object', 2);
-  if ($object->getAc_source() != 'Artikler') {
+  if ($object->getAcSource() != 'Artikler') {
     unset($relations['dbcaddi:hasOnlineAccess']);
   }
   return $relations;
@@ -116,12 +116,18 @@ function ting_infomedia_parse_article($id) {
   $html = FALSE;
   $obj = ting_infomedia_get_article($id);
 
-  if( !empty($obj->error)) {
+  // No results.
+  if (empty($obj)) {
+    return NULL;
+  }
+
+  if(!empty($obj->error)) {
     return ting_infomedia_parse_for_errors($obj);
   }
   else {
     foreach($obj->parts as $part=>$val) {
-      if($message = ting_infomedia_parse_for_article_error($val) ) {
+      $message = ting_infomedia_parse_for_article_error($val);
+      if(!empty($message)) {
         $val['article'] = $message;
       }
       $html = $val['article'];
@@ -129,6 +135,7 @@ function ting_infomedia_parse_article($id) {
       ting_infomedia_clean_html($html);
     }
   }
+
   return $html;
 }
 
@@ -136,7 +143,7 @@ function ting_infomedia_parse_article($id) {
  * Parse for general (user and/or library) errors and take appropiate action if errors are found.
  * return string; if no errors an empty, if errors html-formatted with error string
  */
-function ting_infomedia_parse_for_errors(TingClientInfomediaResult $result, &$error = FALSE) {
+function ting_infomedia_parse_for_errors($result, $error = FALSE) {
   if ($result->error) {
     $error = array(
       '#markup' => $result->error,
@@ -188,17 +195,13 @@ function ting_infomedia_ctools_plugin_directory($module, $plugin) {
 }
 
 /**
- * Implement hook_ctools_plugin_api().
- *
- * If you do this, CTools will pick up default panels pages in
- * <modulename>.pages_default.inc
+ * Implements hook_ting_request_factory().
  */
-function ting_infomedia_ctools_plugin_api($module, $api) {
-  if ($module == 'panels_mini' && $api == 'panels_default') {
-    return array('version' => 1);
-  }
-  if ($module == 'page_manager' && $api == 'pages_default') {
-    return array('version' => 1);
-  }
+function ting_infomedia_ting_request_factory() {
+  return array(
+    'infomediaArticle' => 'ting_infomedia_url',
+    'infomediaReview' => 'ting_infomedia_url',
+  );
 }
 
+include_once 'ting_infomedia.features.inc';
