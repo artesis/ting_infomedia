@@ -17,7 +17,7 @@ function ting_infomedia_menu() {
 
   $items['ting/infomedia/ajax/%'] = array(
       'delivery callback' => 'ajax_deliver',
-    ) + $items['ting/infomedia/nojs/%'];
+  ) + $items['ting/infomedia/nojs/%'];
 
   return $items;
 }
@@ -25,9 +25,12 @@ function ting_infomedia_menu() {
 /**
  * Menu handler which determines if user is logged in on infomedia button click.
  *
- * @param string $type of request ajax or not.
- * @param string $identifier id of infomedia material.
- * @return array of executable ajax commands.
+ * @param string $type
+ *  A string of request type ajax or not.
+ * @param string $identifier
+ *  String of infomedia material id.
+ * @return array
+ *  Array of executable ajax commands.
  */
 function ting_infomedia_ajax($type, $identifier) {
   $commands = array();
@@ -45,13 +48,14 @@ function ting_infomedia_ajax($type, $identifier) {
       if ($creds) {
         $commands[] = ctools_ajax_command_redirect($path);
       }
-    } catch (DingProviderAuthException $e) {
+    }
+    catch (DingProviderAuthException $e) {
       if ($ajax) {
         $_GET['destination'] = $path;
 
         $form = drupal_get_form('user_login');
         $html = drupal_render($form);
-        $commands[] = ajax_command_ding_popup('login_form', 'Log in', $html);
+        $commands[] = ajax_command_ding_popup('login_form', t('Log in'), $html);
       }
       else {
         drupal_goto($path);
@@ -61,7 +65,7 @@ function ting_infomedia_ajax($type, $identifier) {
 
   return array(
     '#type' => 'ajax',
-    '#commands' => $commands
+    '#commands' => $commands,
   );
 }
 
