@@ -7,19 +7,68 @@ module_load_include('inc', 'ting_infomedia' , 'ting_infomedia.wrapper');
 /**
  * Implements hook_menu
  */
-/*
 function ting_infomedia_menu() {
-  $items['ting/infomedia/%'] = array(
-    'title' => 'Infomedia',
-    'page callback' => 'ting_infomedia_view',
-    'page arguments' => array(2),
-    'access callback' => TRUE,
+  $items['ting/infomedia/nojs/%'] = array(
+    'page callback' => 'ting_infomedia_ajax',
+    'page arguments' => array(2, 3),
+    'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
 
+  $items['ting/infomedia/ajax/%'] = array(
+      'delivery callback' => 'ajax_deliver',
+  ) + $items['ting/infomedia/nojs/%'];
+
   return $items;
 }
-*/
+
+/**
+ * Menu handler which determines if user is logged in on infomedia button click.
+ *
+ * @param string $type
+ *  A string of request type ajax or not.
+ * @param string $identifier
+ *  String of infomedia material id.
+ * @return array
+ *  Array of executable ajax commands.
+ */
+function ting_infomedia_ajax($type, $identifier) {
+  $commands = array();
+  $path = 'ting/infomedia/' . $identifier;
+
+  ctools_include('ajax');
+  ctools_add_js('ajax-responder');
+
+  // Detect AJAX call.
+  $ajax = ($type == 'ajax');
+
+  if (!empty($identifier)) {
+    try {
+      $creds = ding_user_get_creds();
+      if ($creds) {
+        $commands[] = ctools_ajax_command_redirect($path);
+      }
+    }
+    catch (DingProviderAuthException $e) {
+      if ($ajax) {
+        $_GET['destination'] = $path;
+
+        $form = drupal_get_form('user_login');
+        $html = drupal_render($form);
+        $commands[] = ajax_command_ding_popup('login_form', t('Log in'), $html);
+      }
+      else {
+        drupal_goto($path);
+      }
+    }
+  }
+
+  return array(
+    '#type' => 'ajax',
+    '#commands' => $commands,
+  );
+}
+
 /**
  * Page callback function
  *
