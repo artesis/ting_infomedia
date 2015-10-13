@@ -53,9 +53,13 @@ function ting_infomedia_ajax($type, $identifier) {
       if ($ajax) {
         $_GET['destination'] = $path;
 
-        $form = drupal_get_form('user_login');
-        $html = drupal_render($form);
-        $commands[] = ajax_command_ding_popup('login_form', t('Log in'), $html);
+        $form_state = array(
+          'ajaxify' => TRUE,
+        );
+        $form = drupal_build_form('user_login', $form_state);
+
+        $login_form = drupal_render($form);
+        $commands[] = ajax_command_ding_popup('ding_user', t('Log in'), $login_form, array('resubmit' => TRUE));
       }
       else {
         drupal_goto($path);
