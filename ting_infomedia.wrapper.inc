@@ -122,10 +122,17 @@ function ting_infomedia_check_review($id, $id_is_isbn = FALSE) {
 function ting_infomedia_add_user_creds(TingGenericInfomediaRequest $request) {
   try {
     $creds = ding_user_get_creds();
-    $request->setUser($creds['name']);
+    if (isset($creds['library_card_number'])) {
+      $userid = $creds['library_card_number'];
+    }
+    else {
+      $userid = $creds['name'];
+    }
+    $request->setUser($userid);
     $request->setPin($creds['pass']);
   }
-  catch(DingProviderAuthException $e) {//do nothing
+  catch (DingProviderAuthException $e) {
+    //do nothing
   }
 
   $name = isset($creds['name']) ? $creds['name'] : '';
