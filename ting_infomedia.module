@@ -5,7 +5,7 @@ module_load_include('inc', 'ting_infomedia', 'ting_infomedia.field');
 module_load_include('inc', 'ting_infomedia' , 'ting_infomedia.wrapper');
 
 /**
- * Implements hook_menu
+ * Implements hook_menu().
  */
 function ting_infomedia_menu() {
   $items['ting/infomedia/nojs/%'] = array(
@@ -74,16 +74,29 @@ function ting_infomedia_ajax($type, $identifier) {
 }
 
 /**
- * Page callback function
+ * Page callback function.
  *
- * Return a render array
+ * Return a render array.
  */
 function ting_infomedia_view($id) {
+  global $user;
+
+  if (!ding_user_is_provider_user($user)) {
+    // It's a requirement that the user is a user in the library system
+    // (the credentials will be checked in the Infomedia webservice).
+    drupal_set_message(t('Please log in to read infomedia articles'), 'warning');
+    return array(
+      '#prefix' => '<div class="infomedia_error">',
+      '#suffix' => '</div>',
+      '#theme' => 'status_messages',
+    );
+  }
+
   $article = ting_infomedia_parse_article($id);
   $link = l(t('Return to material page'), 'search/ting/' . $id);
 
   return array(
-    '#markup' => '<div id="article-wrapper">' . render($article). '<hr>' . $link . '</div>',
+    '#markup' => '<div id="article-wrapper">' . render($article) . '<hr>' . $link . '</div>',
     '#theme' => 'ting_infomedia_article',
     '#attached' => array(
       'css' => array(drupal_get_path('module', 'ting_infomedia') . '/ting_infomedia_article_view.css'),
@@ -201,7 +214,7 @@ function ting_infomedia_parse_for_errors($result, $error = FALSE) {
     $error = array(
       '#markup' => $result->error,
       '#prefix' => '<div class="infomedia_error">',
-      '#suffix' => '</div>'
+      '#suffix' => '</div>',
     );
   }
   return $error;
